@@ -38,17 +38,6 @@ function init() {
     
     scene = new THREE.Scene();
 
-/////Create a DirectionalLight and turn on shadows for the light
-    // const light = new THREE.DirectionalLight( 0xffffff, 1 );
-    // light.position.set( 0, 1, 0 ); //default; light shining from top
-    // light.castShadow = true; // default false
-    // scene.add( light );
-    
-    // // light.shadow.mapSize.width = 512; // default
-    // // light.shadow.mapSize.height = 512; // default
-    // // light.shadow.camera.near = 0.5; // default
-    // // light.shadow.camera.far = 500;
-
     ///////////////////////BACKGROUND////////////////////////
     new RGBELoader()
         .load('kloppenheim_05_puresky_4k.hdr', function (texture) {
