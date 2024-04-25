@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { VRButton } from 'three/addons/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+import { add } from 'three/examples/jsm/libs/tween.module.js';
 
 
 let camera, scene, renderer;
@@ -22,8 +23,10 @@ let INTERSECTION;
 let teleportgroup = new THREE.Group();
 teleportgroup.name = 'Teleport-Group';
 
-init();
+let mixer;
 
+init();
+//animate();
 initVR();
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +78,55 @@ function init() {
         
         group.add(cat);
         render();
+    });
+    loader.load('flowers.gltf', async function (gltf) {
+        const flower = gltf.scene;
+        flower.scale.set(0.01, 0.01, 0.01);
+        flower.position.set(-1.3, 0.7, -1.7);
+        await renderer.compileAsync(flower, camera, scene);
+        
+        group.add(flower);
+        render();
+    });
+
+    loader.load('hienaanim.gltf', async function (gltf) {
+        const hyena = gltf.scene;
+        hyena.scale.set(0.8,0.8,0.8);
+        //hyena.position.set(-1, 0.9, -1.7);
+        hyena.position.set(0, -0.1, 0);
+        await renderer.compileAsync(hyena, camera, scene);
+        
+        const boxGeometry = new THREE.BoxGeometry(1, 1, 1); 
+        const invisibleMaterial = new THREE.MeshBasicMaterial({
+            color: 0x000000,
+            opacity: 0,
+            transparent: true
+        });
+        const hitBOx = new THREE.Mesh(boxGeometry, invisibleMaterial); //invisible box so i can pick up the hyena coz its not wokring otherwise
+       hitBOx.position.set(-1, 1, -1.7);
+       hitBOx.scale.set(0.3, 0.3, 0.3);
+        
+        hitBOx.add(hyena);
+        group.add(hitBOx);
+
+        const animations = gltf.animations;
+        const mixer = new THREE.AnimationMixer(hyena);
+        
+        mixer.clipAction(animations[0]).play();
+
+        const clock = new THREE.Clock();
+
+        renderer.setAnimationLoop(() => {
+            const deltaSeconds = clock.getDelta(); 
+            update(deltaSeconds);
+            moveMarker();
+            render();
+        });
+
+        function update(deltaSeconds) {   
+            mixer.update(deltaSeconds); 
+        }
+
     });
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -169,13 +221,12 @@ function initVR() {
 
     raycaster = new THREE.Raycaster();
 
+    // renderer.setAnimationLoop( function () {
 
-    renderer.setAnimationLoop( function () {
-
-        renderer.render(scene, camera);
-        moveMarker();
+    //     renderer.render(scene, camera);
+    //     moveMarker();
     
-    } );
+    // } );
     
 }
 function moveMarker() {
@@ -271,13 +322,16 @@ function onSelectEnd( event ) {
 
 }
 
+
+
 function getIntersections( controller ) {
 
     controller.updateMatrixWorld();
 
     raycaster.setFromXRController( controller );
 
-    return raycaster.intersectObjects(group.children, true);
+   return raycaster.intersectObjects(group.children, true);
+  
 
 }
 
@@ -337,4 +391,13 @@ function render() {
         intersectObjects(controller2);
     }
 }
+// function animate() {
+//     requestAnimationFrame(animate);
+//     if (mixer) {
+//         mixer.update(clock.getDelta());
+//     }
+//     renderer.render(scene, camera);
+    
+// }
+
 
