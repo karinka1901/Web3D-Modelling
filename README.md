@@ -4,11 +4,10 @@
 
 
 
-
-https://users.metropolia.fi/~karind/three.js/build/
+https://karinka1901.github.io/Three.js/barrel/build/
 ![image](https://github.com/karinka1901/Web3D-Modelling/assets/60856417/467b467f-7300-47d4-af28-fe1b2f0356e1)
 
-https://users.metropolia.fi/~karind/three.js_3/build/
+https://karinka1901.github.io/Three.js/hyena/build/
 ![image](https://github.com/karinka1901/Web3D-Modelling/assets/60856417/89ba1aec-d396-4f14-9b4c-dc3a6347c608)
 
 
